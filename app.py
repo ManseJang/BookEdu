@@ -183,7 +183,7 @@ def page_discussion():
 
     if st.button("토론 주제 추천"):
         txt=gpt([{"role":"user","content":
-            f"책 '{title}' 책 줄거리와 내용을 바탕으로 찬성과 반대가 갈리는 토론 주제 2개를 추천, '~해야한다.' 로 끝나는 문장으로 출력.\n\n줄거리:\n{syn}"}],0.4,300)
+            f"책 '{title}' 책 줄거리와 내용을 바탕으로 초등학생 수준에 맞는 주제와 용어로 찬성과 반대가 갈리는 독서 토론 주제 2개를 추천, '~해야한다.' 로 끝나는 문장으로 출력.\n\n줄거리:\n{syn}"}],0.4,300)
         st.session_state.topics=[re.sub('^[0-9]+[). ]+','',l.strip()) for l in txt.splitlines() if l.strip()]
 
     if tp:=st.session_state.get("topics"):
