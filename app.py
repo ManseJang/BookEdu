@@ -81,7 +81,7 @@ def nv_ocr(img):
 
 # ───── PAGE 1 : 책 검색 ─────
 def page_book():
-    st.header("📚 책 검색")
+    st.header("📚 책 검색& 표지를 보며 예측하기")
     if st.sidebar.button("페이지 초기화"): st.session_state.clear(); st.rerun()
 
     q=st.text_input("책 제목·키워드")
@@ -272,7 +272,7 @@ def main():
     </style>""",unsafe_allow_html=True)
     st.title("북클라이밍: 독서의 정상에 도전하라")
 
-    pages={"책 검색":page_book,"독서 퀴즈":page_quiz,"독서 토론":page_discussion,"독서 감상문 피드백":page_feedback}
+    pages={"1단계: 책 검색&표지를 보며 예측하기":page_book,"2단계: 독서 퀴즈":page_quiz,"3단계: 독서 토론":page_discussion,"4단계: 독서 감상문 피드백":page_feedback}
     sel=st.sidebar.radio("메뉴",list(pages.keys()),index=list(pages).index(st.session_state.current_page))
     st.session_state.current_page=sel
     if st.sidebar.button("전체 초기화"): st.session_state.clear(); st.rerun()
