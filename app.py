@@ -1,4 +1,4 @@
-# AI 독서 교육 프로그램  – 2025‑05‑08
+# 북클라이밍 - 독서의 정상에 도전하라  – 2025‑05‑08
 import streamlit as st, requests, re, json, base64, time, mimetypes, uuid, datetime, random
 from bs4 import BeautifulSoup
 from openai import OpenAI
@@ -25,7 +25,7 @@ def to_data_url(url):
         except Exception as e:
             st.warning(f"표지 다운로드 재시도… ({e})"); time.sleep(2)
 
-# ───── GPT 퀴즈 파서 ─────
+# ───── GPT 퀴즈 ─────
 def make_quiz(raw:str)->list:
     m=re.search(r"\[.*]", strip_fence(raw), re.S)
     if not m: return []
@@ -107,10 +107,10 @@ def page_book():
             st.markdown("### 🖼️ 표지 챗봇 (독서 전 활동)")
             if "chat" not in st.session_state:
                 st.session_state.chat=[
-                    {"role":"system","content":"너는 초등 대상 표지‑추론 챗봇. 정답·제목 금지, 질문만 던져."},
+                    {"role":"system","content":"너는 초등 대상 책 표지에 대해 대화를 주고 받는 챗봇입니다. 사용자에게 책 표지와 관련된 질문을 던져서 내용을 추측하고 흥미유발을 해주세요"},
                     {"role":"user","content":[{"type":"text","text":"표지입니다."},
                                               {"type":"image_url","image_url":{"url":to_data_url(cover)}}]},
-                    {"role":"assistant","content":"표지에서 무엇을 볼 수 있나요?"}]
+                    {"role":"assistant","content":"책 표지에서 어떤 것을 볼 수 있나요?"}]
             for m in st.session_state.chat:
                 if m["role"]=="assistant": st.chat_message("assistant").write(m["content"])
                 elif m["role"]=="user" and isinstance(m["content"],str):
@@ -183,7 +183,7 @@ def page_discussion():
 
     if st.button("토론 주제 추천"):
         txt=gpt([{"role":"user","content":
-            f"책 '{title}' 줄거리와 관련해 찬성과 반대가 갈리는 주제 2개를 '~한다.' 로 끝나는 문장으로 출력.\n\n줄거리:\n{syn}"}],0.4,300)
+            f"책 '{title}' 책 줄거리와 내용을 바탕으로 찬성과 반대가 갈리는 토론 주제 2개를 추천, '~해야한다.' 로 끝나는 문장으로 출력.\n\n줄거리:\n{syn}"}],0.4,300)
         st.session_state.topics=[re.sub('^[0-9]+[). ]+','',l.strip()) for l in txt.splitlines() if l.strip()]
 
     if tp:=st.session_state.get("topics"):
@@ -263,14 +263,14 @@ def page_feedback():
 # ───── MAIN ─────
 def main():
     if "current_page" not in st.session_state: st.session_state.current_page="책 검색"
-    st.set_page_config("AI 독서 교육","📚",layout="wide")
+    st.set_page_config("북클라이밍","📚",layout="wide")
     st.markdown("""
     <style>
       body{background:#f0f2f6;} .block-container{background:#fff;border-radius:8px;padding:20px;}
       .stButton>button{background:#4CAF50;color:#fff;border:none;border-radius:5px;padding:8px 16px;margin:5px;}
       .css-1d391kg{background:#f8f9fa;}
     </style>""",unsafe_allow_html=True)
-    st.title("인공지능 독서 교육 프로그램")
+    st.title("북클라이밍: 독서의 정상에 도전하라")
 
     pages={"책 검색":page_book,"독서 퀴즈":page_quiz,"독서 토론":page_discussion,"독서 감상문 피드백":page_feedback}
     sel=st.sidebar.radio("메뉴",list(pages.keys()),index=list(pages).index(st.session_state.current_page))
