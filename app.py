@@ -164,7 +164,7 @@ def page_quiz():
 
             explain=gpt([{"role":"user","content":
                 "다음 JSON으로 각 문항 해설과 총평을 한국어로 작성 해설과 총평은 학생이 무슨 답을 선택하였는지 확인하여 정확하게 채점을 하여야 한다.:\n"+
-                json.dumps({"quiz":q,"student_answers":st.session_state.answers},ensure_ascii=False)}],0.3,800)
+                json.dumps({"quiz":q,"student_answers":st.session_state.answers},ensure_ascii=False)}],0.3,1500)
             st.write(explain)
 
         if st.button("➡️ 독서 토론"): st.session_state.current_page="독서 토론"; st.rerun()
@@ -255,9 +255,9 @@ def page_feedback():
 
     if st.button("피드백 받기"):
         if not essay.strip(): st.error("감상문을 입력하거나 업로드하세요"); return
-        prm=("학생 감상문에 대한 칭찬·개선점·수정 예시.\n\n"
+        prm=("학생 감상문에 대한 칭찬·개선점·수정 예시. 피드백기준은 다음과 같아 인상 깊은 부분이 잘나타났는지, 자신의 생각이나 느낌이 잘드러났는지, 줄거리가 잘 드러났는지, 맞춤법과 문법이 정확한지\n\n"
              f"책 제목:\n{title}\n\n줄거리:\n{syn}\n\n감상문:\n{essay}")
-        fb=gpt([{"role":"user","content":prm}],0.4,800)
+        fb=gpt([{"role":"user","content":prm}],0.4,2000)
         st.subheader("피드백 결과"); st.write(fb)
 
 # ───── MAIN ─────
@@ -281,6 +281,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
 
