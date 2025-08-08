@@ -66,7 +66,7 @@ def crawl_syn(title):
     intro=BeautifulSoup(requests.get("https://book.naver.com"+f["href"],hdr).text,"html.parser").find("div","book_intro")
     return intro.get_text("\n").strip() if intro else ""
 def synopsis(title,b): d=clean_html(b.get("description","")); c=crawl_syn(title); return d+"\n\n"+c if c else d
-def elem_syn(title,s): return gpt([{"role":"user","content":f"책 '{title}' 줄거리를 초등학생 눈높이로 20줄 이상 다시 작성.\n\n원본:\n{s}"}],0.4,600)
+def elem_syn(title,s): return gpt([{"role":"user","content":f"책 '{title}' 줄거리를 초등학생 수준에 맞게 20줄 이상 다시 작성. 꼭 결말 끝까지 문장을 다 마쳐서 작성하여야 한다. 할루시네이션이 일어나서는 안된다. 꼭 정확한 근거를 가지고 줄거리를 작성하여라.\n\n원본:\n{s}"}],0.4,600)
 def nv_ocr(img):
     url=st.secrets.get("NAVER_CLOVA_OCR_URL")
     if not url or not NAVER_OCR_SECRET: return "(OCR 설정 필요)"
@@ -107,7 +107,7 @@ def page_book():
             st.markdown("### 🖼️ 표지 챗봇 (독서 전 활동)")
             if "chat" not in st.session_state:
                 st.session_state.chat=[
-                    {"role":"system","content":"너는 초등 대상 책 표지에 대해 대화를 주고 받는 챗봇입니다. 사용자에게 책 표지와 관련된 질문을 던져서 내용을 추측하고 흥미유발을 해주세요"},
+                    {"role":"system","content":"너는 초등 대상 책 표지에 대해 대화를 주고 받는 챗봇입니다. 사용자에게 책 표지와 관련된 질문을 던져서 책의 내용을 예측하고 책에 대해 흥미를 가질 수 있도록 질문해주세요"},
                     {"role":"user","content":[{"type":"text","text":"표지입니다."},
                                               {"type":"image_url","image_url":{"url":to_data_url(cover)}}]},
                     {"role":"assistant","content":"책 표지에서 어떤 것을 볼 수 있나요?"}]
@@ -133,7 +133,7 @@ def page_quiz():
 
     if "quiz" not in st.session_state and st.button("퀴즈 생성"):
         raw=gpt([{"role":"user","content":
-             f"책 '{title}' 줄거리로 5개 4지선다 퀴즈를 JSON 배열로만 출력. "
+             f"책 '{title}' 반드시 앞서 작성한 줄거리를 바탕으로 5개 4지선다 퀴즈를 JSON 배열로만 출력. "
              "각 항목에 'question', 'options'(4개), 'correct_answer'(1~4) 키를 사용하고, "
              "문항마다 정답 번호가 고르게 분포되도록 옵션을 섞어줘."+
              "\n\n줄거리:\n"+syn}],0.4,700)
@@ -163,7 +163,7 @@ def page_quiz():
             st.write(f"**총점: {score} / 100**")
 
             explain=gpt([{"role":"user","content":
-                "다음 JSON으로 각 문항 해설과 총평을 한국어로 작성:\n"+
+                "다음 JSON으로 각 문항 해설과 총평을 한국어로 작성 해설과 총평은 학생이 무슨 답을 선택하였는지 확인하여 정확하게 채점을 하여야 한다.:\n"+
                 json.dumps({"quiz":q,"student_answers":st.session_state.answers},ensure_ascii=False)}],0.3,800)
             st.write(explain)
 
@@ -198,7 +198,7 @@ def page_discussion():
                 "user_side":side,"bot_side":"반대" if side=="찬성" else "찬성",
                 "debate_chat":[{"role":"system","content":
                     f"초등 대상 토론 챗봇. 주제 '{topic}'. "
-                    "1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. "
+                    "1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. 책 내용과 관련지어 토론이 진행되어야 한다."
                     f"사용자 {side}, 챗봇 {('반대' if side=='찬성' else '찬성')}."}]
             }); st.rerun()
 
@@ -226,7 +226,7 @@ def page_discussion():
         else:
             if "debate_eval" not in st.session_state:
                 st.session_state.debate_chat.append({"role":"user","content":
-                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백."})
+                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백. 학생들에게 조금 더 부드러운 어조로 친절하게 피드백과 조언을 해주어라."})
                 res=gpt(st.session_state.debate_chat,0.4,600)
                 st.session_state.debate_chat.append({"role":"assistant","content":res})
                 st.session_state.debate_eval=True; st.rerun()
@@ -281,3 +281,4 @@ def main():
 
 if __name__=="__main__":
     main()
+
