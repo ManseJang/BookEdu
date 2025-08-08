@@ -66,7 +66,7 @@ def crawl_syn(title):
     intro=BeautifulSoup(requests.get("https://book.naver.com"+f["href"],hdr).text,"html.parser").find("div","book_intro")
     return intro.get_text("\n").strip() if intro else ""
 def synopsis(title,b): d=clean_html(b.get("description","")); c=crawl_syn(title); return d+"\n\n"+c if c else d
-def elem_syn(title,s): return gpt([{"role":"user","content":f"책 '{title}' 줄거리를 초등학생 수준에 맞춰서 작성해줘. 반드시 전체 다 출력하여야 한다. 중간에 말이 끊켜서는 안된다. 결말 끝까지 문장을 다 마쳐서 작성하여야 한다. 할루시네이션이 일어나서는 안된다. 꼭 정확한 근거를 가지고 줄거리를 작성하여라.\n\n원본:\n{s}"}],0.4,600)
+def elem_syn(title,s): return gpt([{"role":"user","content":f"책 '{title}' 줄거리를 초등학생 수준에 맞춰서 반드시 끝까지 작성해줘. 반드시 전체 다 출력하여야 한다. 중간에 문장이 끊어져서는는 안된다. 할루시네이션이 일어나서는 안된다. 꼭 정확한 근거를 가지고 줄거리를 작성하여라.\n\n원본:\n{s}"}],0.4,2000)
 def nv_ocr(img):
     url=st.secrets.get("NAVER_CLOVA_OCR_URL")
     if not url or not NAVER_OCR_SECRET: return "(OCR 설정 필요)"
@@ -281,5 +281,6 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
