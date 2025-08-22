@@ -198,7 +198,7 @@ def page_discussion():
                 "user_side":side,"bot_side":"반대" if side=="찬성" else "찬성",
                 "debate_chat":[{"role":"system","content":
                     f"초등 대상 토론 챗봇. 주제 '{topic}'. "
-                    "1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. 책 내용과 관련지어 토론이 진행되어야 한다."
+                    "1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. 사용자가 선택한 책 줄거리와 내용을 바탕으로 토론이 진행되어야 한다."
                     f"사용자 {side}, 챗봇 {('반대' if side=='찬성' else '찬성')}."}]
             }); st.rerun()
 
@@ -281,6 +281,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
 
