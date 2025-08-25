@@ -226,7 +226,7 @@ def page_discussion():
         else:
             if "debate_eval" not in st.session_state:
                 st.session_state.debate_chat.append({"role":"user","content":
-                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백. 학생들에게 조금 더 부드러운 어조로 친절하게 피드백과 조언을 해주어라.기본 점수로 80점은 주어라. 학생에게는 칭찬도 필요하다다"})
+                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백. 학생들에게 조금 더 부드러운 어조로 친절하게 피드백과 조언을 해주어라.기본 점수로 70점은 주어라."})
                 res=gpt(st.session_state.debate_chat,0.4,600)
                 st.session_state.debate_chat.append({"role":"assistant","content":res})
                 st.session_state.debate_eval=True; st.rerun()
@@ -281,6 +281,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
 
