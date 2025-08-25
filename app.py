@@ -198,7 +198,7 @@ def page_discussion():
                 "user_side":side,"bot_side":"반대" if side=="찬성" else "찬성",
                 "debate_chat":[{"role":"system","content":
                     f"초등 대상 토론 챗봇. 주제 '{topic}'. "
-                    "1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. 사용자가 선택한 책 줄거리와 내용을 바탕으로 토론이 진행되어야 한다."
+                    f"1찬성입론 2반대입론 3찬성반론 4반대반론 5찬성최후 6반대최후. 사용자가 선택한 {title} 와 줄거리 {syn} 내용을 바탕으로 토론이 진행되어야 한다."
                     f"사용자 {side}, 챗봇 {('반대' if side=='찬성' else '찬성')}."}]
             }); st.rerun()
 
@@ -226,7 +226,7 @@ def page_discussion():
         else:
             if "debate_eval" not in st.session_state:
                 st.session_state.debate_chat.append({"role":"user","content":
-                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백. 학생들에게 조금 더 부드러운 어조로 친절하게 피드백과 조언을 해주어라."})
+                    "토론 종료. 어느 측이 설득력 있었는지(100점)와 이유·피드백. 학생들에게 조금 더 부드러운 어조로 친절하게 피드백과 조언을 해주어라.기본 점수로 80점은 주어라. 학생에게는 칭찬도 필요하다다"})
                 res=gpt(st.session_state.debate_chat,0.4,600)
                 st.session_state.debate_chat.append({"role":"assistant","content":res})
                 st.session_state.debate_eval=True; st.rerun()
@@ -255,7 +255,7 @@ def page_feedback():
 
     if st.button("피드백 받기"):
         if not essay.strip(): st.error("감상문을 입력하거나 업로드하세요"); return
-        prm=("학생 감상문에 대한 칭찬·개선점·수정 예시. 피드백기준은 다음과 같아 인상 깊은 부분이 잘나타났는지, 자신의 생각이나 느낌이 잘드러났는지, 줄거리가 잘 드러났는지, 맞춤법과 문법이 정확한지\n\n"
+        prm=("학생 감상문에 대한 칭찬·개선점·수정 예시. 수정 예시는 학생 감상문 전체에 대한 수정 예시이어야 한다. 피드백기준은 다음과 같아 인상 깊은 부분이 잘나타났는지, 자신의 생각이나 느낌이 잘드러났는지, 줄거리가 잘 드러났는지, 맞춤법과 문법이 정확한지\n\n"
              f"책 제목:\n{title}\n\n줄거리:\n{syn}\n\n감상문:\n{essay}")
         fb=gpt([{"role":"user","content":prm}],0.4,2000)
         st.subheader("피드백 결과"); st.write(fb)
@@ -281,6 +281,7 @@ def main():
 
 if __name__=="__main__":
     main()
+
 
 
 
